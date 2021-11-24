@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Golang Test</title>
+</head>
+
+<style>
+    body {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<body>
+    <div class="body-wrapper">
+        <div class="header"></div>
+        <div class="main">
+            <form action="" method="POST" id="inputForm">
+                <label for="message">Name:</label>
+                <input type="text" name="message" id="message" minlength="2">
+                <button type="submit">Go!!!</button>
+            </form>
+        </div>
+        <div id="serverMessageBox"></div>
+    </div>
+    <script>
+        $(function () {
+            var winHeight = $(window).height();
+            $('body').height(winHeight);
+        });
+
+        $(window).resize(function () {
+            var winHeight = $(window).height();
+            $('body').height(winHeight);
+        });
+    </script>
+
+    <script>
+        //local url
+        const url = "127.0.0.1:8080"
+        var inputForm = document.getElementById('inputForm')
+        //the function will run when input form submit
+        inputForm.addEventListener('submit', function (e) {
+            //自動的に更新されるのを防止
+            e.preventDefault();
+
+            const formdata = new FormData(inputForm)
+            //非同期通信→サーバーのresponseをまちつつrequestする
+            // the fetch send to ServeFiles(Golang/main/ServeFiles())
+            fetch(url, {
+                //how to request method
+                method: "POST",
+                body: formdata,
+            }).then(
+                response => response.text()
+            ).then(
+                (data) => {
+                    console.log(data);
+                    document.getElementById("serverMessageBox").innerHTML = data
+                }
+            ).catch(
+                error => console.error(error)
+            )
+            // }).then(function (response) {
+            //     response.text() = response;
+            // }).then(function (data) {
+            //     console.log(data);
+            // }).catch(function (error) {
+            //     console.error(error);
+            // })
+        })
+    </script>
+</body>
+
+</html>
